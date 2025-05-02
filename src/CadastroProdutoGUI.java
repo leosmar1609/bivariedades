@@ -19,16 +19,14 @@ public class CadastroProdutoGUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        // Painel principal
         JPanel painel = new JPanel();
         painel.setBackground(new Color(245, 245, 245));
         painel.setLayout(new GridBagLayout());
         setContentPane(painel);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Espaçamento
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-        // Título
         JLabel lblTitulo = new JLabel("Cadastrar Novo Produto");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
         lblTitulo.setForeground(new Color(50, 50, 50));
@@ -37,7 +35,6 @@ public class CadastroProdutoGUI extends JFrame {
         gbc.gridy = 0;
         painel.add(lblTitulo, gbc);
 
-        // Nome
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
@@ -49,7 +46,6 @@ public class CadastroProdutoGUI extends JFrame {
         gbc.gridx = 1;
         painel.add(txtId, gbc);
 
-        // Nome
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -60,7 +56,6 @@ public class CadastroProdutoGUI extends JFrame {
         gbc.gridx = 1;
         painel.add(txtNome, gbc);
 
-        // Descrição
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -71,7 +66,6 @@ public class CadastroProdutoGUI extends JFrame {
         gbc.gridx = 1;
         painel.add(txtDescricao, gbc);
 
-        // Preço
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -82,7 +76,6 @@ public class CadastroProdutoGUI extends JFrame {
         gbc.gridx = 1;
         painel.add(txtPreco, gbc);
 
-        // Estoque
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
         gbc.gridy = 5;
@@ -93,7 +86,6 @@ public class CadastroProdutoGUI extends JFrame {
         gbc.gridx = 1;
         painel.add(txtEstoque, gbc);
 
-        // Botão cadastrar
         JButton btnCadastrar = new JButton("Cadastrar Produto");
         estilizarBotao(btnCadastrar);
 
@@ -103,7 +95,6 @@ public class CadastroProdutoGUI extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         painel.add(btnCadastrar, gbc);
 
-        // Ação do botão
         btnCadastrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -139,13 +130,12 @@ public class CadastroProdutoGUI extends JFrame {
             int estoque = Integer.parseInt(txtEstoque.getText());
 
             produtos produto = new produtos(id, nome, descricao, preco, estoque);
-            produto.setId(id); // Definindo o ID do produto
+            produto.setId(id);
             produto.setNome(nome);
             produto.setDescricao(descricao);
             produto.setPreco(preco);
             produto.setEstoque(estoque);
 
-            // Chamando seu método que já existe
             lojadao dao = new lojadao();
             dao.inserirProduto(produto);
 

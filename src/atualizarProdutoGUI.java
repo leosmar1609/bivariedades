@@ -15,7 +15,7 @@ public class atualizarProdutoGUI extends JFrame {
     private Font oswaldFont;
 
     public atualizarProdutoGUI() {
-        this(null); // Chama o construtor com ID nulo
+        this(null);
     }
 
     public atualizarProdutoGUI(Long idProduto) {
@@ -34,7 +34,6 @@ public class atualizarProdutoGUI extends JFrame {
 
         painelCampos = new JPanel(new GridLayout(5, 2, 10, 10));
 
-        // ID
         JLabel lblId = new JLabel("ID do Produto:");
         estilizarLabel(lblId);
         txtId = new JTextField();
@@ -43,7 +42,6 @@ public class atualizarProdutoGUI extends JFrame {
         painelCampos.add(lblId);
         painelCampos.add(txtId);
 
-        // Nome
         JLabel lblNome = new JLabel("Nome:");
         estilizarLabel(lblNome);
         txtNome = new JTextField();
@@ -51,7 +49,6 @@ public class atualizarProdutoGUI extends JFrame {
         painelCampos.add(lblNome);
         painelCampos.add(txtNome);
 
-        // Descrição
         JLabel lblDescricao = new JLabel("Descrição:");
         estilizarLabel(lblDescricao);
         txtDescricao = new JTextField();
@@ -59,7 +56,6 @@ public class atualizarProdutoGUI extends JFrame {
         painelCampos.add(lblDescricao);
         painelCampos.add(txtDescricao);
 
-        // Preço
         JLabel lblPreco = new JLabel("Preço:");
         estilizarLabel(lblPreco);
         txtPreco = new JTextField();
@@ -67,7 +63,6 @@ public class atualizarProdutoGUI extends JFrame {
         painelCampos.add(lblPreco);
         painelCampos.add(txtPreco);
 
-        // Estoque
         JLabel lblEstoque = new JLabel("Estoque:");
         estilizarLabel(lblEstoque);
         txtEstoque = new JTextField();
@@ -75,7 +70,6 @@ public class atualizarProdutoGUI extends JFrame {
         painelCampos.add(lblEstoque);
         painelCampos.add(txtEstoque);
 
-        // Botão
         btnAtualizar = new JButton("Atualizar");
         btnAtualizar.setBackground(new Color(40, 167, 69));
         btnAtualizar.setForeground(Color.WHITE);
@@ -121,7 +115,7 @@ public class atualizarProdutoGUI extends JFrame {
                 }
             }
         });
-        btnExcluir.setVisible(idProduto != null); // Exibe o botão apenas se um ID de produto for fornecido
+        btnExcluir.setVisible(idProduto != null);
 
         JPanel painelBotao = new JPanel();
         painelBotao.setOpaque(false);

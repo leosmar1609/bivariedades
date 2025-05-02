@@ -201,16 +201,14 @@ public class SistemaLojaGUI extends JFrame {
             areaProdutos.setText("Resultado da Busca:\n\n");
         
             if (termo.isEmpty()) {
-                // Se o campo de busca estiver vazio, atualiza todos os produtos
                 atualizarListaProdutos.run();
                 return;
             }
         
             try {
-                Long idBuscado = Long.parseLong(termo);  // Tenta buscar pelo ID
-                produtos produto = lojaDAO.buscarProdutoPorId(idBuscado); // Aqui, chamamos o método buscarProdutoPorId diretamente
+                Long idBuscado = Long.parseLong(termo); 
+                produtos produto = lojaDAO.buscarProdutoPorId(idBuscado);
                 if (produto != null) {
-                    // Exibe os detalhes do produto encontrado
                     areaProdutos.append(" ID: " + produto.getId() + "\n");
                     areaProdutos.append(" Nome: " + produto.getNome() + "\n");
                     areaProdutos.append(" Descrição: " + produto.getDescricao() + "\n");
@@ -221,7 +219,6 @@ public class SistemaLojaGUI extends JFrame {
                     areaProdutos.append("Produto não encontrado.\n");
                 }
             } catch (NumberFormatException ex) {
-                // Se não for um número, tenta buscar pelo nome
                 List<produtos> lista = lojaDAO.listarProdutos();
                 for (produtos produto : lista) {
                     if (produto.getNome().toLowerCase().contains(termo)) {
@@ -256,7 +253,7 @@ public class SistemaLojaGUI extends JFrame {
 
         JButton btnAtualizarProduto = new JButton("Atualizar Produto");
         btnAtualizarProduto.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        btnAtualizarProduto.setBackground(new Color(255, 193, 7)); // Amarelo
+        btnAtualizarProduto.setBackground(new Color(255, 193, 7));
         btnAtualizarProduto.setForeground(Color.BLACK);
         btnAtualizarProduto.setPreferredSize(new Dimension(200, 40));
         btnAtualizarProduto.addActionListener(e -> {
@@ -274,7 +271,6 @@ public class SistemaLojaGUI extends JFrame {
                         }
                     }
                 } catch (NumberFormatException ex) {
-                    // Se não for número, tentar buscar pelo nome
                     List<produtos> lista = lojaDAO.listarProdutos();
                     for (produtos produto : lista) {
                         if (produto.getNome().equalsIgnoreCase(termo)) {
@@ -286,7 +282,6 @@ public class SistemaLojaGUI extends JFrame {
                 }
             }
         
-            // Se nenhum produto for encontrado, ou campo estiver vazio
             atualizarProdutoGUI atualizarProduto = new atualizarProdutoGUI();
             atualizarProduto.setVisible(true);
         });
@@ -313,17 +308,15 @@ public class SistemaLojaGUI extends JFrame {
         gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(0, 0, 10, 0); // Espaçamento abaixo do título
+        gbc.insets = new Insets(0, 0, 10, 0);
 
-        lojaDAO = new lojadao(); // Inicialização placeholder
+        lojaDAO = new lojadao();
 
-        // Título
         JLabel titulo = new JLabel("Resumo Financeiro", SwingConstants.CENTER);
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
         titulo.setForeground(new Color(33, 37, 41));
         painelFinanceiro.add(titulo, gbc);
 
-        // Painel de lucros
         JPanel painelLucros = new JPanel();
         painelLucros.setLayout(new BoxLayout(painelLucros, BoxLayout.Y_AXIS));
         painelLucros.setBackground(new Color(245, 245, 245));
@@ -343,18 +336,16 @@ public class SistemaLojaGUI extends JFrame {
         }
 
         gbc.gridy = 1;
-        gbc.insets = new Insets(10, 0, 10, 0); // Espaçamento acima e abaixo do painel de lucros
+        gbc.insets = new Insets(10, 0, 10, 0);
         painelFinanceiro.add(painelLucros, gbc);
 
-        // Texto explicativo ajustado
         JLabel expliq = new JLabel("<html><div>*Os lucros diários são referentes ao dia atual, enquanto os lucros<br/> semanais e mensais são referentes à semana e mês atuais, respectivamente.<br/><br/>*Lucros diários: renovados todos os dias 00:00<br/><br/>*Lucros semanais: renovados a cada 7 dias<br/><br/>*Lucros mensais: renovados todo dia 1º</div></html>");
         expliq.setFont(new Font("Segoe UI", Font.ITALIC, 14));
         expliq.setAlignmentX(Component.CENTER_ALIGNMENT);
         gbc.gridy = 2;
-        gbc.insets = new Insets(10, 0, 20, 0); // Espaçamento acima e abaixo do texto explicativo
+        gbc.insets = new Insets(10, 0, 20, 0); 
         painelFinanceiro.add(expliq, gbc);
 
-        // Botões
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         painelBotoes.setBackground(new Color(245, 245, 245));
 
@@ -377,8 +368,8 @@ public class SistemaLojaGUI extends JFrame {
         painelBotoes.add(btnHistorico);
 
         gbc.gridy = 3;
-        gbc.weighty = 1.0; // Empurra os botões para baixo
-        gbc.fill = GridBagConstraints.NONE; // Não preencher o espaço horizontalmente
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.NONE;
         painelFinanceiro.add(painelBotoes, gbc);
 
         carregarLucros();
@@ -424,12 +415,11 @@ public class SistemaLojaGUI extends JFrame {
     }
 
     private void buscarProdutoPorId(Long id) {
-        listModel.clear();  // Limpar resultados anteriores
+        listModel.clear();
     
         try {
-            produtos produto = lojaDAO.buscarProdutoPorId(id);  // Usando o método correto
+            produtos produto = lojaDAO.buscarProdutoPorId(id);
             if (produto != null) {
-                // Exibe o nome do produto (ou você pode ajustar para mostrar outras informações)
                 listModel.addElement(produto.getNome());
             } else {
                 
@@ -492,14 +482,12 @@ public class SistemaLojaGUI extends JFrame {
         if (linhaSelecionada != -1) {
             DefaultTableModel modelo = (DefaultTableModel) tabelaCarrinho.getModel();
     
-            // Remover o subtotal do total geral
             String subtotalStr = modelo.getValueAt(linhaSelecionada, 3).toString().replace("R$", "").replace(",", ".");
             double subtotal = Double.parseDouble(subtotalStr);
             totalCarrinho -= subtotal;
     
             modelo.removeRow(linhaSelecionada);
     
-            // Atualiza o total
             lblTotal.setText(String.format("Total: R$ %.2f", totalCarrinho));
         } else {
             JOptionPane.showMessageDialog(null, "Selecione um item do carrinho para remover.", "Nenhum item selecionado", JOptionPane.WARNING_MESSAGE);
@@ -517,7 +505,6 @@ public class SistemaLojaGUI extends JFrame {
         if (confirmar == JOptionPane.YES_OPTION) {
             PagamentoGUI pagamento = new PagamentoGUI(totalCarrinho);
     
-            // Aguarda a janela de pagamento ser fechada
             pagamento.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {

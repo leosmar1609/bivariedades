@@ -79,7 +79,7 @@ public class atualizarProdutoGUI extends JFrame {
                 long id = Long.parseLong(txtId.getText());
                 String nome = txtNome.getText();
                 String descricao = txtDescricao.getText();
-                double preco = Double.parseDouble(txtPreco.getText());
+                double preco = Double.parseDouble(txtPreco.getText().replace(",", "."));
                 int estoque = Integer.parseInt(txtEstoque.getText());
 
                 produtos produtoAtualizado = new produtos(id, nome, descricao, preco, estoque);
@@ -131,10 +131,10 @@ public class atualizarProdutoGUI extends JFrame {
         if (idProduto != null) {
             produtos p = dao.buscarProdutoPorId(idProduto);
             if (p != null) {
-                txtId.setText(String.valueOf(p.getId()));
+                txtId.setText(String.valueOf(p.getId()));  // Aqui você define o ID no campo
                 txtNome.setText(p.getNome());
                 txtDescricao.setText(p.getDescricao());
-                txtPreco.setText(String.valueOf(p.getPreco()));
+                txtPreco.setText(String.format("%.2f", p.getPreco()));
                 txtEstoque.setText(String.valueOf(p.getEstoque()));
             } else {
                 JOptionPane.showMessageDialog(this, "Produto não encontrado!");

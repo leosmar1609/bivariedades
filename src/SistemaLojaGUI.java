@@ -18,6 +18,11 @@ public class SistemaLojaGUI extends JFrame {
     private JButton btnAdicionarCarrinho, btnFinalizarVenda, btnRemoverCarrinho;
     private lojadao lojaDAO;
     private double totalCarrinho = 0.0;
+    private JTextField txtNome;
+    private JTextField txtDescricao;
+    private JTextField txtPreco;
+    private JTextField txtEstoque;
+
 
     private CardLayout cardLayout;
     private JPanel painelPrincipal;
@@ -64,6 +69,12 @@ public class SistemaLojaGUI extends JFrame {
     }
 
     private JPanel construirTelaVendas() {
+
+        txtNome = new JTextField();
+        txtDescricao = new JTextField();
+        txtPreco = new JTextField();
+        txtEstoque = new JTextField();
+
         JPanel painelVendas = new JPanel(new BorderLayout(10, 10));
 
         JPanel painelPesquisa = new JPanel(new GridLayout(2, 1, 5, 5));
@@ -84,12 +95,31 @@ public class SistemaLojaGUI extends JFrame {
         txtBuscaId = new JTextField();
         txtBuscaId.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         txtBuscaId.addKeyListener(new KeyAdapter() {
-            public void keyReleased(KeyEvent e) {
-                buscarProdutoPorId(Long.parseLong(txtBuscaId.getText()));
+        public void keyReleased(KeyEvent e) {
+        try {
+            String texto = txtBuscaId.getText().trim();
+            if (texto.isEmpty()) {
+                buscarProdutosPorNome(); // Se o campo estiver vazio, busca por nome
+            } else if (texto.matches("\\d+")) {
+                Long idProduto = Long.valueOf(texto); 
+                buscarProdutoPorId(idProduto); 
+            } else if (texto.matches("\\D+")) {
+                buscarProdutosPorNome(); // Se o campo contiver letras, busca por nome
+            } else
+                buscarProdutosPorNome(); // Se o campo contiver caracteres inválidos, busca por nome
+            if (!texto.isEmpty() && texto.matches("\\d+")) {
+                Long idProduto = Long.valueOf(texto); 
+                buscarProdutoPorId(idProduto); 
             }
-        });
-        linhaBuscaId.add(new JLabel("Código (ID):"), BorderLayout.WEST);
-        linhaBuscaId.add(txtBuscaId, BorderLayout.CENTER);
+        } catch (NumberFormatException ex) {
+            
+        }
+    }
+});
+txtNome.requestFocus();
+linhaBuscaId.add(new JLabel("Código (ID):"), BorderLayout.WEST);
+linhaBuscaId.add(txtBuscaId, BorderLayout.CENTER);
+
 
         painelPesquisa.add(linhaBuscaNome);
         painelPesquisa.add(linhaBuscaId);
@@ -257,33 +287,32 @@ public class SistemaLojaGUI extends JFrame {
         btnAtualizarProduto.setForeground(Color.BLACK);
         btnAtualizarProduto.setPreferredSize(new Dimension(200, 40));
         btnAtualizarProduto.addActionListener(_ -> {
-            String termo = txtBusca.getText().trim();
-        
-            if (!termo.isEmpty()) {
-                try {
-                    Long idBuscado = Long.parseLong(termo);
-                    List<produtos> lista = lojaDAO.listarProdutos();
-                    for (produtos produto : lista) {
-                        if (produto.getId() == idBuscado) {
-                            atualizarProdutoGUI atualizarProduto = new atualizarProdutoGUI(produto.getId());
-                            atualizarProduto.setVisible(true);
-                            return;
-                        }
+        String termo = txtBusca.getText().trim();
+
+        if (!termo.isEmpty()) {
+            List<produtos> lista = lojaDAO.listarProdutos();
+            try {
+                Long idBuscado = Long.parseLong(termo);
+                for (produtos produto : lista) {
+                    if (produto.getId().equals(idBuscado)) {
+                        new atualizarProdutoGUI(produto.getId()).setVisible(true);
+                        return;
                     }
-                } catch (NumberFormatException ex) {
-                    List<produtos> lista = lojaDAO.listarProdutos();
-                    for (produtos produto : lista) {
-                        if (produto.getNome().equalsIgnoreCase(termo)) {
-                            atualizarProdutoGUI atualizarProduto = new atualizarProdutoGUI(produto.getId());
-                            atualizarProduto.setVisible(true);
-                            return;
-                        }
+                }
+            } catch (NumberFormatException ex) {
+                for (produtos produto : lista) {
+                    if (produto.getNome().equalsIgnoreCase(termo)) {
+                        new atualizarProdutoGUI(produto.getId()).setVisible(true);
+                        return;
                     }
                 }
             }
-        
-            atualizarProdutoGUI atualizarProduto = new atualizarProdutoGUI();
-            atualizarProduto.setVisible(true);
+        }
+           
+
+    
+        atualizarProdutoGUI atualizarProduto = new atualizarProdutoGUI();
+     atualizarProduto.setVisible(true);
         });
 
     
@@ -414,20 +443,29 @@ public class SistemaLojaGUI extends JFrame {
         }
     }
 
-    private void buscarProdutoPorId(Long id) {
-        listModel.clear();
-    
+    private void buscarProdutoPorId(Long idProduto) {
         try {
-            produtos produto = lojaDAO.buscarProdutoPorId(id);
+            produtos produto = lojaDAO.buscarProdutoPorId(idProduto);
             if (produto != null) {
-                listModel.addElement(produto.getNome());
+                // Preencher os campos de texto com os dados do produto
+                txtNome.setText(produto.getNome());
+                txtDescricao.setText(produto.getDescricao());
+                txtPreco.setText(String.valueOf(produto.getPreco()));
+                txtEstoque.setText(String.valueOf(produto.getEstoque()));
+    
+                // Se o id do produto foi encontrado, não faz sentido buscar produtos por nome
+                // Aqui, você pode apenas mostrar o nome do produto encontrado
+                listModel.clear(); // Limpar lista anterior (se necessário)
+                listModel.addElement(produto.getNome()); // Adicionar o nome do produto encontrado na lista
             } else {
-                
+                JOptionPane.showMessageDialog(this, "Produto não encontrado.");
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro ao buscar o produto: " + e.getMessage());
         }
     }
+    
+    
     
 
     private void adicionarProdutoCarrinho() {
@@ -437,7 +475,7 @@ public class SistemaLojaGUI extends JFrame {
             return;
         }
     
-        int quantidade;
+        int quantidade = Integer.parseInt(txtQuantidade.getText().trim());
         try {
             quantidade = Integer.parseInt(txtQuantidade.getText());
             if (quantidade <= 0) {
@@ -457,9 +495,13 @@ public class SistemaLojaGUI extends JFrame {
             return;
         }
     
-        if (quantidade > produto.getEstoque()) {
-            JOptionPane.showMessageDialog(this, "Produto sem estoque suficiente.");
-            return;
+        try {
+            if (quantidade > produto.getEstoque()) {
+                JOptionPane.showMessageDialog(this, "Produto sem estoque suficiente.");
+                return;
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Quantidade inválida. Insira um número válido.");
         }
     
         double subtotal = produto.getPreco() * quantidade;

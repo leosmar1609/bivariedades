@@ -86,7 +86,7 @@ public class PagamentoGUI extends JFrame {
         painel.add(lblTroco);
         painel.add(txtTroco);
 
-        cbFormaPagamento.addActionListener(e -> {
+        cbFormaPagamento.addActionListener(_ -> {
             String forma = (String) cbFormaPagamento.getSelectedItem();
             boolean ehDinheiro = forma.equals("Dinheiro");
             txtValorPago.setEnabled(ehDinheiro);
@@ -135,7 +135,7 @@ public class PagamentoGUI extends JFrame {
         btnFinalizar.setFocusPainted(false);
         btnCancelar.setFocusPainted(false);
 
-        btnFinalizar.addActionListener(e -> {
+        btnFinalizar.addActionListener(_ -> {
             String forma = (String) cbFormaPagamento.getSelectedItem();
             if (forma.equals("Dinheiro") && txtTroco.getText().equals("Valor insuficiente")) {
                 JOptionPane.showMessageDialog(this, "O valor pago é menor que o valor total!", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -146,7 +146,12 @@ public class PagamentoGUI extends JFrame {
             }
         });
 
-        btnCancelar.addActionListener(e -> dispose());
+        btnCancelar.addActionListener((ActionEvent _) -> {
+            int resposta = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja cancelar o pagamento?", "Cancelar Pagamento", JOptionPane.YES_NO_OPTION);
+            if (resposta == JOptionPane.YES_OPTION) {
+                dispose();
+            }
+        });
 
         painel.add(btnFinalizar);
         painel.add(btnCancelar);

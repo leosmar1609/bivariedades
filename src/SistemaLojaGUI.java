@@ -56,9 +56,9 @@ public class SistemaLojaGUI extends JFrame {
 
         add(painelPrincipal, BorderLayout.CENTER);
 
-        btnVendas.addActionListener(e -> cardLayout.show(painelPrincipal, "venda"));
-        btnFinanceiro.addActionListener(e -> cardLayout.show(painelPrincipal, "financeiro"));
-        btnProdutos.addActionListener(e -> cardLayout.show(painelPrincipal, "produtos"));
+        btnVendas.addActionListener(_ -> cardLayout.show(painelPrincipal, "venda"));
+        btnFinanceiro.addActionListener(_ -> cardLayout.show(painelPrincipal, "financeiro"));
+        btnProdutos.addActionListener(_ -> cardLayout.show(painelPrincipal, "produtos"));
 
         cardLayout.show(painelPrincipal, "venda");
     }
@@ -113,13 +113,13 @@ public class SistemaLojaGUI extends JFrame {
 
         btnAdicionarCarrinho = new JButton("Adicionar");
         btnAdicionarCarrinho.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        btnAdicionarCarrinho.addActionListener(e -> adicionarProdutoCarrinho());
+        btnAdicionarCarrinho.addActionListener(_ -> adicionarProdutoCarrinho());
         btnAdicionarCarrinho.setBackground(new Color(0, 123, 255));
         btnAdicionarCarrinho.setForeground(Color.WHITE);
 
         btnFinalizarVenda = new JButton("Finalizar Venda");
         btnFinalizarVenda.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        btnFinalizarVenda.addActionListener(e -> finalizarVenda());
+        btnFinalizarVenda.addActionListener(_ -> finalizarVenda());
         btnFinalizarVenda.setBackground(new Color(40, 167, 69));
         btnFinalizarVenda.setForeground(Color.WHITE);
 
@@ -127,7 +127,7 @@ public class SistemaLojaGUI extends JFrame {
         btnRemoverCarrinho.setFont(new Font("Segoe UI", Font.BOLD, 16));
         btnRemoverCarrinho.setBackground(new Color(220, 53, 69));
         btnRemoverCarrinho.setForeground(Color.WHITE);
-        btnRemoverCarrinho.addActionListener(e -> removerItemCarrinho());
+        btnRemoverCarrinho.addActionListener(_ -> removerItemCarrinho());
 
         painelAcoes.add(btnRemoverCarrinho);
 
@@ -196,7 +196,7 @@ public class SistemaLojaGUI extends JFrame {
     
         atualizarListaProdutos.run();
     
-        btnBuscar.addActionListener(e -> {
+        btnBuscar.addActionListener(_ -> {
             String termo = txtBusca.getText().trim().toLowerCase();
             areaProdutos.setText("Resultado da Busca:\n\n");
         
@@ -239,7 +239,7 @@ public class SistemaLojaGUI extends JFrame {
         btnRegistrarProduto.setBackground(new Color(0, 123, 255));
         btnRegistrarProduto.setForeground(Color.WHITE);
         btnRegistrarProduto.setPreferredSize(new Dimension(200, 40));
-        btnRegistrarProduto.addActionListener(e -> {
+        btnRegistrarProduto.addActionListener(_ -> {
             CadastroProdutoGUI cadastroProduto = new CadastroProdutoGUI();
             cadastroProduto.setVisible(true);
         });
@@ -249,14 +249,14 @@ public class SistemaLojaGUI extends JFrame {
         btnAtualizar.setBackground(new Color(0, 123, 255));
         btnAtualizar.setForeground(Color.WHITE);
         btnAtualizar.setPreferredSize(new Dimension(200, 40));
-        btnAtualizar.addActionListener(e -> atualizarListaProdutos.run());
+        btnAtualizar.addActionListener(_ -> atualizarListaProdutos.run());
 
         JButton btnAtualizarProduto = new JButton("Atualizar Produto");
         btnAtualizarProduto.setFont(new Font("Segoe UI", Font.BOLD, 16));
         btnAtualizarProduto.setBackground(new Color(255, 193, 7));
         btnAtualizarProduto.setForeground(Color.BLACK);
         btnAtualizarProduto.setPreferredSize(new Dimension(200, 40));
-        btnAtualizarProduto.addActionListener(e -> {
+        btnAtualizarProduto.addActionListener(_ -> {
             String termo = txtBusca.getText().trim();
         
             if (!termo.isEmpty()) {
@@ -361,8 +361,8 @@ public class SistemaLojaGUI extends JFrame {
         btnAtualizar.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnHistorico.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-        btnAtualizar.addActionListener(e -> carregarLucros());
-        btnHistorico.addActionListener(e -> mostrarHistoricoLucros());
+        btnAtualizar.addActionListener(_ -> carregarLucros());
+        btnHistorico.addActionListener(_ -> mostrarHistoricoLucros());
 
         painelBotoes.add(btnAtualizar);
         painelBotoes.add(btnHistorico);

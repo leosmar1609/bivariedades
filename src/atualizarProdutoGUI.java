@@ -74,7 +74,7 @@ public class atualizarProdutoGUI extends JFrame {
         btnAtualizar.setBackground(new Color(40, 167, 69));
         btnAtualizar.setForeground(Color.WHITE);
         btnAtualizar.setFont(oswaldFont.deriveFont(Font.BOLD, 16f));
-        btnAtualizar.addActionListener((ActionEvent e) -> {
+        btnAtualizar.addActionListener((ActionEvent _) -> {
             try {
                 long id = Long.parseLong(txtId.getText());
                 String nome = txtNome.getText();
@@ -96,13 +96,13 @@ public class atualizarProdutoGUI extends JFrame {
         btnCancelar.setBackground(new Color(220, 53, 69));
         btnCancelar.setForeground(Color.WHITE);
         btnCancelar.setFont(oswaldFont.deriveFont(Font.BOLD, 16f));
-        btnCancelar.addActionListener((ActionEvent e) -> dispose());
+        btnCancelar.addActionListener((ActionEvent _) -> dispose());
 
         btnExcluir = new JButton("Excluir Produto");
         btnExcluir.setBackground(new Color(220, 53, 69));
         btnExcluir.setForeground(Color.WHITE);
         btnExcluir.setFont(oswaldFont.deriveFont(Font.BOLD, 16f));
-        btnExcluir.addActionListener((ActionEvent e) -> {
+        btnExcluir.addActionListener((ActionEvent _) -> {
             int resposta = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este produto?", "Excluir Produto", JOptionPane.YES_NO_OPTION);
             if (resposta == JOptionPane.YES_OPTION) {
                 try {

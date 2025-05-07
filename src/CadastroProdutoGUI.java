@@ -155,9 +155,9 @@ public class CadastroProdutoGUI extends JFrame {
         txtEstoque.setText("");
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new CadastroProdutoGUI().setVisible(true);
-        });
-    }
+    // public static void main(String[] args) {
+    //     SwingUtilities.invokeLater(() -> {
+    //         new CadastroProdutoGUI().setVisible(true);
+    //     });
+    // }
 }

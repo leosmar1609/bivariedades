@@ -99,14 +99,14 @@ public class SistemaLojaGUI extends JFrame {
         try {
             String texto = txtBuscaId.getText().trim();
             if (texto.isEmpty()) {
-                buscarProdutosPorNome(); // Se o campo estiver vazio, busca por nome
+                buscarProdutosPorNome();
             } else if (texto.matches("\\d+")) {
                 Long idProduto = Long.valueOf(texto); 
                 buscarProdutoPorId(idProduto); 
             } else if (texto.matches("\\D+")) {
-                buscarProdutosPorNome(); // Se o campo contiver letras, busca por nome
+                buscarProdutosPorNome();
             } else
-                buscarProdutosPorNome(); // Se o campo contiver caracteres inválidos, busca por nome
+                buscarProdutosPorNome();
             if (!texto.isEmpty() && texto.matches("\\d+")) {
                 Long idProduto = Long.valueOf(texto); 
                 buscarProdutoPorId(idProduto); 
@@ -447,16 +447,13 @@ linhaBuscaId.add(txtBuscaId, BorderLayout.CENTER);
         try {
             produtos produto = lojaDAO.buscarProdutoPorId(idProduto);
             if (produto != null) {
-                // Preencher os campos de texto com os dados do produto
                 txtNome.setText(produto.getNome());
                 txtDescricao.setText(produto.getDescricao());
                 txtPreco.setText(String.valueOf(produto.getPreco()));
                 txtEstoque.setText(String.valueOf(produto.getEstoque()));
     
-                // Se o id do produto foi encontrado, não faz sentido buscar produtos por nome
-                // Aqui, você pode apenas mostrar o nome do produto encontrado
-                listModel.clear(); // Limpar lista anterior (se necessário)
-                listModel.addElement(produto.getNome()); // Adicionar o nome do produto encontrado na lista
+                listModel.clear();
+                listModel.addElement(produto.getNome());
             } else {
                 JOptionPane.showMessageDialog(this, "Produto não encontrado.");
             }

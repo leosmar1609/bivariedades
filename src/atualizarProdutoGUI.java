@@ -4,6 +4,7 @@ import entity.produtos;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.geom.RoundRectangle2D;
 import java.io.File;
 import java.io.IOException;
 
@@ -14,6 +15,12 @@ public class atualizarProdutoGUI extends JFrame {
     private JPanel painelPrincipal, painelCampos;
     private Font oswaldFont;
 
+    private final Color corFundo = new Color(33, 33, 33);
+    private final Color corTexto = Color.WHITE;
+    private final Color corCampo = new Color(50, 50, 50);
+    private final Color corTurquesa = new Color(0, 206, 209);
+    private final Color corErro = new Color(220, 53, 69);
+
     public atualizarProdutoGUI() {
         this(null);
     }
@@ -22,59 +29,38 @@ public class atualizarProdutoGUI extends JFrame {
         lojadao dao = new lojadao();
 
         setTitle("Atualizar Produto");
-        setSize(420, 380);
+        setSize(460, 420);
         setLocationRelativeTo(null);
+        setUndecorated(true); // Sem borda padrão do SO
+        setShape(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 30, 30));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
+        setBackground(new Color(0, 0, 0, 0)); // Transparente
 
         carregarFonteOswald();
 
-        painelPrincipal = new JPanel(new BorderLayout(10, 10));
-        painelPrincipal.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        painelPrincipal = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(corFundo);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+            }
+        };
+        painelPrincipal.setLayout(new BorderLayout(10, 10));
+        painelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         painelCampos = new JPanel(new GridLayout(5, 2, 10, 10));
+        painelCampos.setOpaque(false);
 
-        JLabel lblId = new JLabel("ID do Produto:");
-        estilizarLabel(lblId);
-        txtId = new JTextField();
-        txtId.setEditable(false);
-        estilizarCampo(txtId);
-        painelCampos.add(lblId);
-        painelCampos.add(txtId);
+        criarCampo("ID do Produto:", txtId = new JTextField(), false);
+        criarCampo("Nome:", txtNome = new JTextField(), true);
+        criarCampo("Descrição:", txtDescricao = new JTextField(), true);
+        criarCampo("Preço:", txtPreco = new JTextField(), true);
+        criarCampo("Estoque:", txtEstoque = new JTextField(), true);
 
-        JLabel lblNome = new JLabel("Nome:");
-        estilizarLabel(lblNome);
-        txtNome = new JTextField();
-        estilizarCampo(txtNome);
-        painelCampos.add(lblNome);
-        painelCampos.add(txtNome);
-
-        JLabel lblDescricao = new JLabel("Descrição:");
-        estilizarLabel(lblDescricao);
-        txtDescricao = new JTextField();
-        estilizarCampo(txtDescricao);
-        painelCampos.add(lblDescricao);
-        painelCampos.add(txtDescricao);
-
-        JLabel lblPreco = new JLabel("Preço:");
-        estilizarLabel(lblPreco);
-        txtPreco = new JTextField();
-        estilizarCampo(txtPreco);
-        painelCampos.add(lblPreco);
-        painelCampos.add(txtPreco);
-
-        JLabel lblEstoque = new JLabel("Estoque:");
-        estilizarLabel(lblEstoque);
-        txtEstoque = new JTextField();
-        estilizarCampo(txtEstoque);
-        painelCampos.add(lblEstoque);
-        painelCampos.add(txtEstoque);
-
-        btnAtualizar = new JButton("Atualizar");
-        btnAtualizar.setBackground(new Color(40, 167, 69));
-        btnAtualizar.setForeground(Color.WHITE);
-        btnAtualizar.setFont(oswaldFont.deriveFont(Font.BOLD, 16f));
-        btnAtualizar.addActionListener((ActionEvent _) -> {
+        btnAtualizar = criarBotao("Atualizar", corTurquesa, _ -> {
             try {
                 long id = Long.parseLong(txtId.getText());
                 String nome = txtNome.getText();
@@ -92,17 +78,9 @@ public class atualizarProdutoGUI extends JFrame {
             }
         });
 
-        btnCancelar = new JButton("Cancelar");
-        btnCancelar.setBackground(new Color(220, 53, 69));
-        btnCancelar.setForeground(Color.WHITE);
-        btnCancelar.setFont(oswaldFont.deriveFont(Font.BOLD, 16f));
-        btnCancelar.addActionListener((ActionEvent _) -> dispose());
+        btnCancelar = criarBotao("Cancelar", corErro, _ -> dispose());
 
-        btnExcluir = new JButton("Excluir Produto");
-        btnExcluir.setBackground(new Color(220, 53, 69));
-        btnExcluir.setForeground(Color.WHITE);
-        btnExcluir.setFont(oswaldFont.deriveFont(Font.BOLD, 16f));
-        btnExcluir.addActionListener((ActionEvent _) -> {
+        btnExcluir = criarBotao("Excluir Produto", corErro, _ -> {
             int resposta = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este produto?", "Excluir Produto", JOptionPane.YES_NO_OPTION);
             if (resposta == JOptionPane.YES_OPTION) {
                 try {
@@ -117,21 +95,20 @@ public class atualizarProdutoGUI extends JFrame {
         });
         btnExcluir.setVisible(idProduto != null);
 
-        JPanel painelBotao = new JPanel();
-        painelBotao.setOpaque(false);
-        painelBotao.add(btnAtualizar);
-        painelBotao.add(btnCancelar);
-        painelBotao.add(btnExcluir);
+        JPanel painelBotoes = new JPanel();
+        painelBotoes.setOpaque(false);
+        painelBotoes.add(btnAtualizar);
+        painelBotoes.add(btnCancelar);
+        painelBotoes.add(btnExcluir);
 
         painelPrincipal.add(painelCampos, BorderLayout.CENTER);
-        painelPrincipal.add(painelBotao, BorderLayout.SOUTH);
-
+        painelPrincipal.add(painelBotoes, BorderLayout.SOUTH);
         setContentPane(painelPrincipal);
 
         if (idProduto != null) {
             produtos p = dao.buscarProdutoPorId(idProduto);
             if (p != null) {
-                txtId.setText(String.valueOf(p.getId()));  // Aqui você define o ID no campo
+                txtId.setText(String.valueOf(p.getId()));
                 txtNome.setText(p.getNome());
                 txtDescricao.setText(p.getDescricao());
                 txtPreco.setText(String.format("%.2f", p.getPreco()));
@@ -140,6 +117,41 @@ public class atualizarProdutoGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Produto não encontrado!");
             }
         }
+    }
+
+    private void criarCampo(String titulo, JTextField campo, boolean editavel) {
+        JLabel label = new JLabel(titulo);
+        label.setFont(oswaldFont.deriveFont(Font.PLAIN, 16f));
+        label.setForeground(corTexto);
+        campo.setEditable(editavel);
+        campo.setFont(oswaldFont.deriveFont(Font.PLAIN, 15f));
+        campo.setBackground(corCampo);
+        campo.setForeground(corTexto);
+        campo.setCaretColor(corTexto);
+        campo.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        painelCampos.add(label);
+        painelCampos.add(campo);
+    }
+
+    private JButton criarBotao(String texto, Color corFundo, AbstractAction action) {
+        JButton botao = new JButton(texto);
+        botao.setFont(oswaldFont.deriveFont(Font.BOLD, 15f));
+        botao.setFocusPainted(false);
+        botao.setForeground(Color.WHITE);
+        botao.setBackground(corFundo);
+        botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        botao.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        botao.addActionListener(action);
+        return botao;
+    }
+
+    private JButton criarBotao(String texto, Color corFundo, java.awt.event.ActionListener listener) {
+        return criarBotao(texto, corFundo, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listener.actionPerformed(e);
+            }
+        });
     }
 
     private void carregarFonteOswald() {
@@ -151,16 +163,5 @@ public class atualizarProdutoGUI extends JFrame {
             oswaldFont = new Font("Segoe UI", Font.PLAIN, 14);
             System.err.println("Erro ao carregar a fonte Oswald: " + e.getMessage());
         }
-    }
-
-    private void estilizarLabel(JLabel label) {
-        label.setFont(oswaldFont.deriveFont(Font.PLAIN, 16f));
-        label.setForeground(new Color(33, 37, 41));
-    }
-
-    private void estilizarCampo(JTextField campo) {
-        campo.setFont(oswaldFont.deriveFont(Font.PLAIN, 15f));
-        campo.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-        campo.setBackground(new Color(245, 245, 245));
     }
 }

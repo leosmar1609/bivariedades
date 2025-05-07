@@ -1,163 +1,132 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import DAO.lojadao;
 import entity.produtos;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.geom.RoundRectangle2D;
+import java.io.File;
+import java.io.IOException;
+
 public class CadastroProdutoGUI extends JFrame {
 
-    private JTextField txtNome;
-    private JTextField txtDescricao;
-    private JTextField txtPreco;
-    private JTextField txtEstoque;
-    private JTextField txtId;
+    private JTextField txtNome, txtDescricao, txtPreco, txtEstoque, txtId;
+    private JButton btnCadastrar, btnCancelar;
+    private JPanel painelPrincipal, painelCampos;
+    private Font oswaldFont;
+
+    private final Color corFundo = new Color(33, 33, 33);
+    private final Color corTexto = Color.WHITE;
+    private final Color corCampo = new Color(50, 50, 50);
+    private final Color corTurquesa = new Color(0, 206, 209);
+    private final Color corErro = new Color(220, 53, 69);
 
     public CadastroProdutoGUI() {
-        setTitle("Cadastro de Produtos");
-        setSize(500, 500);
+        setTitle("Cadastrar Produto");
+        setSize(460, 380);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setUndecorated(true);
+        setShape(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 30, 30));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setBackground(new Color(0, 0, 0, 0));
 
-        JPanel painel = new JPanel();
-        painel.setBackground(new Color(245, 245, 245));
-        painel.setLayout(new GridBagLayout());
-        setContentPane(painel);
+        carregarFonteOswald();
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        painelPrincipal = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(corFundo);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+            }
+        };
+        painelPrincipal.setLayout(new BorderLayout(10, 10));
+        painelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JLabel lblTitulo = new JLabel("Cadastrar Novo Produto");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        lblTitulo.setForeground(new Color(50, 50, 50));
-        gbc.gridwidth = 2;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        painel.add(lblTitulo, gbc);
+        painelCampos = new JPanel(new GridLayout(5, 2, 10, 10));
+        painelCampos.setOpaque(false);
 
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.LINE_END;
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        painel.add(new JLabel("ID:"), gbc);
+        criarCampo("Id do Produto:", txtId = new JTextField(), true);
+        criarCampo("Nome:", txtNome = new JTextField(), true);
+        criarCampo("Descrição:", txtDescricao = new JTextField(), true);
+        criarCampo("Preço:", txtPreco = new JTextField(), true);
+        criarCampo("Estoque:", txtEstoque = new JTextField(), true);
 
-        txtId = criarCampoTexto();
-        gbc.anchor = GridBagConstraints.LINE_START;
-        gbc.gridx = 1;
-        painel.add(txtId, gbc);
+        btnCadastrar = criarBotao("Cadastrar", corTurquesa, _ -> {
+            try {
+                Long id = Long.parseLong(txtId.getText());
+                String nome = txtNome.getText();
+                String descricao = txtDescricao.getText();
+                double preco = Double.parseDouble(txtPreco.getText().replace(",", "."));
+                int estoque = Integer.parseInt(txtEstoque.getText());
 
-        gbc.anchor = GridBagConstraints.LINE_END;
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        painel.add(new JLabel("Nome:"), gbc);
+                produtos novoProduto = new produtos(id, nome, descricao, preco, estoque);
+                new lojadao().inserirProduto(novoProduto);
 
-        txtNome = criarCampoTexto();
-        gbc.anchor = GridBagConstraints.LINE_START;
-        gbc.gridx = 1;
-        painel.add(txtNome, gbc);
+                JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
+                dispose();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao cadastrar o produto: " + ex.getMessage());
+            }
+        });
 
-        gbc.anchor = GridBagConstraints.LINE_END;
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        painel.add(new JLabel("Descrição:"), gbc);
+        btnCancelar = criarBotao("Cancelar", corErro, _ -> dispose());
 
-        txtDescricao = criarCampoTexto();
-        gbc.anchor = GridBagConstraints.LINE_START;
-        gbc.gridx = 1;
-        painel.add(txtDescricao, gbc);
+        JPanel painelBotoes = new JPanel();
+        painelBotoes.setOpaque(false);
+        painelBotoes.add(btnCadastrar);
+        painelBotoes.add(btnCancelar);
 
-        gbc.anchor = GridBagConstraints.LINE_END;
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        painel.add(new JLabel("Preço:"), gbc);
+        painelPrincipal.add(painelCampos, BorderLayout.CENTER);
+        painelPrincipal.add(painelBotoes, BorderLayout.SOUTH);
+        setContentPane(painelPrincipal);
+    }
 
-        txtPreco = criarCampoTexto();
-        gbc.anchor = GridBagConstraints.LINE_START;
-        gbc.gridx = 1;
-        painel.add(txtPreco, gbc);
+    private void criarCampo(String titulo, JTextField campo, boolean editavel) {
+        JLabel label = new JLabel(titulo);
+        label.setFont(oswaldFont.deriveFont(Font.PLAIN, 16f));
+        label.setForeground(corTexto);
+        campo.setEditable(editavel);
+        campo.setFont(oswaldFont.deriveFont(Font.PLAIN, 15f));
+        campo.setBackground(corCampo);
+        campo.setForeground(corTexto);
+        campo.setCaretColor(corTexto);
+        campo.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        painelCampos.add(label);
+        painelCampos.add(campo);
+    }
 
-        gbc.anchor = GridBagConstraints.LINE_END;
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        painel.add(new JLabel("Estoque:"), gbc);
+    private JButton criarBotao(String texto, Color corFundo, AbstractAction action) {
+        JButton botao = new JButton(texto);
+        botao.setFont(oswaldFont.deriveFont(Font.BOLD, 15f));
+        botao.setFocusPainted(false);
+        botao.setForeground(Color.WHITE);
+        botao.setBackground(corFundo);
+        botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        botao.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        botao.addActionListener(action);
+        return botao;
+    }
 
-        txtEstoque = criarCampoTexto();
-        gbc.anchor = GridBagConstraints.LINE_START;
-        gbc.gridx = 1;
-        painel.add(txtEstoque, gbc);
-
-        JButton btnCadastrar = new JButton("Cadastrar Produto");
-        estilizarBotao(btnCadastrar);
-
-        gbc.gridwidth = 2;
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        gbc.anchor = GridBagConstraints.CENTER;
-        painel.add(btnCadastrar, gbc);
-
-        btnCadastrar.addActionListener(new ActionListener() {
+    private JButton criarBotao(String texto, Color corFundo, java.awt.event.ActionListener listener) {
+        return criarBotao(texto, corFundo, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cadastrarProduto();
+                listener.actionPerformed(e);
             }
         });
     }
 
-    private JTextField criarCampoTexto() {
-        JTextField campo = new JTextField(20);
-        campo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        return campo;
-    }
-
-    private void estilizarBotao(JButton botao) {
-        botao.setBackground(new Color(0, 153, 76));
-        botao.setForeground(Color.WHITE);
-        botao.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        botao.setFocusPainted(false);
-        botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
-    }
-
-    private void cadastrarProduto() {
+    private void carregarFonteOswald() {
         try {
-            long id = Long.parseLong(txtId.getText());
-            if (id <= 0) {
-                throw new NumberFormatException("ID deve ser maior que zero.");
-            }
-            String nome = txtNome.getText();
-            String descricao = txtDescricao.getText();
-            String precoTexto = txtPreco.getText().replace(",", ".");
-            float preco = Float.parseFloat(precoTexto);
-            int estoque = Integer.parseInt(txtEstoque.getText());
-
-            produtos produto = new produtos(id, nome, descricao, preco, estoque);
-            produto.setId(id);
-            produto.setNome(nome);
-            produto.setDescricao(descricao);
-            produto.setPreco(preco);
-            produto.setEstoque(estoque);
-
-            lojadao dao = new lojadao();
-            dao.inserirProduto(produto);
-
-            JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
-            limparCampos();
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao cadastrar produto: " + ex.getMessage());
+            oswaldFont = Font.createFont(Font.TRUETYPE_FONT, new File("fontes/Oswald-Regular.ttf"));
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(oswaldFont);
+        } catch (FontFormatException | IOException e) {
+            oswaldFont = new Font("Segoe UI", Font.PLAIN, 14);
+            System.err.println("Erro ao carregar a fonte Oswald: " + e.getMessage());
         }
     }
-
-    private void limparCampos() {
-        txtId.setText("");
-        txtNome.setText("");
-        txtDescricao.setText("");
-        txtPreco.setText("");
-        txtEstoque.setText("");
-    }
-
-    // public static void main(String[] args) {
-    //     SwingUtilities.invokeLater(() -> {
-    //         new CadastroProdutoGUI().setVisible(true);
-    //     });
-    // }
 }
